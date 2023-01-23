@@ -1,0 +1,116 @@
+CREATE DATABASE "curso-jsp"
+  WITH OWNER = postgres
+       ENCODING = 'UTF8'
+       TABLESPACE = pg_default
+       LC_COLLATE = 'Portuguese_Brazil.1252'
+       LC_CTYPE = 'Portuguese_Brazil.1252'
+       CONNECTION LIMIT = -1;
+       
+       
+
+CREATE TABLE public.model_login
+(
+  login character varying(200) NOT NULL,
+  senha character varying(200) NOT NULL,
+  id integer NOT NULL DEFAULT nextval('model_login_id_seq'::regclass),
+  nome character varying(300) NOT NULL,
+  email character varying(300) NOT NULL,
+  CONSTRAINT model_login_pkey PRIMARY KEY (id),
+  CONSTRAINT login_unique UNIQUE (login)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.model_login
+  OWNER TO postgres;
+  
+  INSERT INTO public.model_login(
+            login, senha)
+    VALUES ('admin', 'admin');
+
+
+alter table model_login add id serial primary key;
+alter table model_login add nome character varying(300);
+alter table model_login add email character varying(300);
+
+
+!-- alterando a coluna nome para vazio e alterando a mesma para not null para que o preenchimento seja obrigatório --
+UPDATE model_login SET nome = '';
+alter table model_login alter column nome set not null;
+
+UPDATE model_login SET email = '';
+alter table model_login alter column email set not null;
+
+alter table model_login alter column login set not null;
+alter table model_login alter column senha set not null;
+
+select * from model_login where login = 'admin'
+
+
+tornando admin o usuario administrador
+select count(1) from model_login where upper(login) = upper('admin')
+select count(1) > 0 from model_login where upper(login) = upper('admin')
+
+definindo coluna de usuario administrador
+alter table model_login add column useradmin boolean not null default false:
+
+criando nova coluna e escolhendo um padrao de usuario no caso o admin de id 1
+alter table model_login add column usuario_id bigint not null default 1;
+
+colocando uma chave estrangeira e uma restrição onde qualquer cadastro vai apontar para o usuario logado que o criou
+alter talbe model_login add constraint usuario_fk foreign key (usuario_id) references model_login (id);
+
+mudando de usuario logado
+update model_login set usuario_id = 19 where id > 12
+
+adicionando coluna de perfil de usuario 
+alter table model_login add column perfil character varying(200);
+
+mudando toda a coluna perfil para auxiliar
+update model_login set perfil = 'AUXILIAR' where perfil is null;
+
+criando colunas para foto
+alter table model_login add column fotouser text;
+alter table model_login add column extensaofotouser character varying(10);
+
+limitando a paginação em 5 registros
+select * from model_login where usuario_id = 1 order by nome offset 0 limit 5
+
+definindo contagem de 1 para cada informação do usuario logado e definindo como total
+select count(1) as total from model_login where usuario_id = " + userLogado
+
+criando sequencia para tabela telefone
+CREATE SEQUENCE public.model_telefone_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 36
+  CACHE 1;
+  
+  criando tabela telefone com duas chaves estrangeiras 1° o usuario dono do telefone e 2° o usuario que esta cadastrando
+  create table telefone(
+
+id integer not null default nextval('telefone_seq'::regclass'),
+numero character varying(50) not null,
+usuario_pai_id bigint not null,
+usuario_cad_id bigint not null,
+
+constraint telefone_pkey primary key (id),
+constraint usuario_pai_fk foreing key (usuario_pai_id) references model_login(id),
+constraint usuario_cad_fk foreing key (usuario_cad_id) references model_login(id)
+)
+
+inclusao da coluna datadenascimento na tabela model_login
+alter table model_login add column datanascimento date;
+
+incluindo coluna numerica de 6 casas com precisão de 3
+alter table model_login add column rendamensal double precision;
+
+deletando a restricao do usuario_pai_fk
+ALTER TABLE telefone DROP CONSTRAINT usuario_pai_fk;
+
+criando nova referencia de usuario_pai_id com nova restricao com atualização e delete em cascata
+ALTER TABLE telefone ADD CONSTRAINT usuario_pai_fk FOREIGN KEY (usuario_pai_id) REFERENCES model_login (id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+
