@@ -7,7 +7,7 @@ public class SingleConnectionBanco {
 	
 	private static String banco = "jdbc:postgresql://localhost:5434/curso-jsp?autoReconnect=true";
 	private static String user = "postgres";
-	private static String senha = "postgres";
+	private static String senha = "Kleber01@";
 	private static Connection connection = null;
 	
 	
