@@ -2,6 +2,7 @@ package servlets;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import Util.ReportUtil;
+import beandto.BeanDtoGraficoSalarioUser;
 import dao.DAOUsuarioRepository;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -107,7 +109,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
 				request.setAttribute("modelLogins", modelLogins);
 
-				request.setAttribute("msg", "Usuï¿½rio em ediï¿½ï¿½o");
+				request.setAttribute("msg", "Usuario em edição");
 				request.setAttribute("modolLogin", modelLogin);
 				request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
@@ -117,7 +119,7 @@ public class ServletUsuarioController extends ServletGenericUtil {
 
 				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
 
-				request.setAttribute("msg", "Usuï¿½rios carregados");
+				request.setAttribute("msg", "Usuarios carregados");
 				request.setAttribute("modelLogins", modelLogins);
 				request.setAttribute("totalPagina", daoUsuarioRepository.totalPagina(this.getUserLogado(request)));
 				request.getRequestDispatcher("principal/usuario.jsp").forward(request, response);
@@ -205,6 +207,33 @@ public class ServletUsuarioController extends ServletGenericUtil {
 
 			}
 
+			else if (acao != null && !acao.isEmpty() && acao.equalsIgnoreCase("graficoSalario")) {
+			
+			
+				String dataInicial = request.getParameter("dataInicial");
+				String dataFinal = request.getParameter("dataFinal");
+				
+				if (dataInicial == null || dataInicial.isEmpty() 
+						&& dataFinal == null || dataFinal.isEmpty()) {
+
+					BeanDtoGraficoSalarioUser beanDtoGraficoSalarioUser = daoUsuarioRepository.montarGraficoMediaSalario(super.getUserLogado(request));
+
+					ObjectMapper mapper = new ObjectMapper();
+
+					String json = mapper.writeValueAsString(beanDtoGraficoSalarioUser);
+					
+					response.getWriter().write(json);
+					
+
+				} else {
+					
+			
+				
+				}
+					
+				
+			}
+			
 			else {
 				List<ModelLogin> modelLogins = daoUsuarioRepository.consultaUsuarioList(super.getUserLogado(request));
 				request.setAttribute("modelLogins", modelLogins);
@@ -261,9 +290,8 @@ public class ServletUsuarioController extends ServletGenericUtil {
 			modelLogin.setLocalidade(localidade);
 			modelLogin.setUf(uf);
 			modelLogin.setNumero(numero);
-			// atributo (dataNascimento) tera valor de classe data que vai gerar um novo
-			// valor (SimpleDateFormat) que sera formatado para dia mes e ano
-			modelLogin.setDataNascimento(new SimpleDateFormat("yyyy-mm-dd").parse(dataNascimento));
+			//valor de dataSql no formato ano-mes-dia formatado de dia/mes/ano vindo do parametro obtido em tela
+			modelLogin.setDataNascimento(Date.valueOf(new SimpleDateFormat("yyyy-mm-dd").format(new SimpleDateFormat("dd/mm/yyyy").parse(dataNascimento))));
 			modelLogin.setRendamensal(Double.valueOf(rendaMensal));
 
 			if (ServletFileUpload.isMultipartContent(request)) {

@@ -112,5 +112,5 @@ ALTER TABLE telefone DROP CONSTRAINT usuario_pai_fk;
 criando nova referencia de usuario_pai_id com nova restricao com atualização e delete em cascata
 ALTER TABLE telefone ADD CONSTRAINT usuario_pai_fk FOREIGN KEY (usuario_pai_id) REFERENCES model_login (id) ON UPDATE CASCADE ON DELETE CASCADE;
 
-
-
+selecionando a média de rendamensal nomeado como media_salarial onde tem uduario_id e tudo agrupado pela coluna perfil
+select avg(rendamensal) as media_salarial, perfil from model_login where usuario_id = 1 group by perfil
