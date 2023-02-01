@@ -114,3 +114,22 @@ ALTER TABLE telefone ADD CONSTRAINT usuario_pai_fk FOREIGN KEY (usuario_pai_id) 
 
 selecionando a média de rendamensal nomeado como media_salarial onde tem uduario_id e tudo agrupado pela coluna perfil
 select avg(rendamensal) as media_salarial, perfil from model_login where usuario_id = 1 group by perfil
+
+criando uma sequencia para o versionador de banco
+CREATE SEQUENCE public.versionadorbanco_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE public.versionadorbanco_seq
+  OWNER TO postgres;
+  
+  criando a tabela versionadorbanco
+  CREATE TABLE public.versionadorbanco
+(
+  id integer NOT NULL DEFAULT nextval('versionadorbanco_seq'::regclass),
+  arquivo_sql character varying(50) NOT NULL,
+  constraint id_pk primary key (id)
+  
+)

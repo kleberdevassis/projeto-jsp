@@ -406,11 +406,15 @@ if (modelLogin != null && modelLogin.getSexo().equals("FEMININO")) {
 	$("#rendamensal").focus();
 
 	var dataNascimento = $("#dataNascimento").val(); <!-- obtem o valor de dataNascimento -->
+	
+	if(dataNascimento != null && dataNascimento!= ''){
 
 	var dateFormat = new Date(dataNascimento);
 
 	$("#dataNascimento").val(dateFormat.toLocaleDateString('pt-BR',{timeZone: 'UTC'}));<!-- formata valor para o local UTC permitindo ser incluido no Banco-->
 
+	}
+	
 	$("#nome").focus();
 	
 	<!-- funcao para formatação da data de nascimento -->

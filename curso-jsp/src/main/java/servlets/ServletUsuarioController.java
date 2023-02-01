@@ -216,7 +216,8 @@ public class ServletUsuarioController extends ServletGenericUtil {
 				if (dataInicial == null || dataInicial.isEmpty() 
 						&& dataFinal == null || dataFinal.isEmpty()) {
 
-					BeanDtoGraficoSalarioUser beanDtoGraficoSalarioUser = daoUsuarioRepository.montarGraficoMediaSalario(super.getUserLogado(request));
+					BeanDtoGraficoSalarioUser beanDtoGraficoSalarioUser = daoUsuarioRepository.
+							montarGraficoMediaSalario(super.getUserLogado(request));
 
 					ObjectMapper mapper = new ObjectMapper();
 
@@ -226,6 +227,15 @@ public class ServletUsuarioController extends ServletGenericUtil {
 					
 
 				} else {
+					
+					BeanDtoGraficoSalarioUser beanDtoGraficoSalarioUser = daoUsuarioRepository.
+							montarGraficoMediaSalario(super.getUserLogado(request),dataInicial, dataFinal);
+
+					ObjectMapper mapper = new ObjectMapper();
+
+					String json = mapper.writeValueAsString(beanDtoGraficoSalarioUser);
+					
+					response.getWriter().write(json);
 					
 			
 				

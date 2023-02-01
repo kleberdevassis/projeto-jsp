@@ -114,6 +114,8 @@
 	<jsp:include page="javascriptfile.jsp"></jsp:include>
 
 	<script type="text/javascript">
+	
+	var myChart = new Chart(document.getElementById('myChart'));
 
 	
 	function gerarGrafico(){
@@ -132,8 +134,14 @@
 
 			var json = JSON.parse(response);
 			
-	
-				var myChart = new Chart(
+			
+			
+	            // dados extraidos do chartjs e vinculados ao ajax
+	            
+	            myChart.destroy(); // limpa o grafico gerado anteriormente
+	            
+	            // gerando o grafico
+				 myChart = new Chart(
 						document.getElementById('myChart'),
 						{
 							type : 'line',
